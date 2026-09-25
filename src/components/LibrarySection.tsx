@@ -4,10 +4,10 @@ import { useState } from "react";
 import WorkoutCard from "./WorkoutCard";
 import { Workout } from "../context/PlanContext";
 
-type SortKey = "duration" | "caloriesBurned" | "rating";
+type SortKey = "featured" | "duration" | "caloriesBurned" | "rating";
 
 export default function LibrarySection({ workouts }: { workouts: Workout[] }) {
-  const [sortBy, setSortBy] = useState<SortKey>("duration");
+  const [sortBy, setSortBy] = useState<SortKey>("featured");
   const [query, setQuery] = useState("");
 
   const filtered = workouts.filter((w) => {
@@ -19,11 +19,14 @@ export default function LibrarySection({ workouts }: { workouts: Workout[] }) {
     return nameMatch || tagMatch;
   });
 
-  const sorted = [...filtered].sort((a, b) => {
-    if (sortBy === "rating") return b.rating - a.rating;
-    if (sortBy === "caloriesBurned") return b.caloriesBurned - a.caloriesBurned;
-    return a.duration - b.duration;
-  });
+  const sorted =
+    sortBy === "featured"
+      ? filtered
+      : [...filtered].sort((a, b) => {
+          if (sortBy === "rating") return b.rating - a.rating;
+          if (sortBy === "caloriesBurned") return b.caloriesBurned - a.caloriesBurned;
+          return a.duration - b.duration;
+        });
 
   return (
     <section id="library" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -44,6 +47,7 @@ export default function LibrarySection({ workouts }: { workouts: Workout[] }) {
             onChange={(e) => setSortBy(e.target.value as SortKey)}
             className="bg-[#161616] border border-neutral-700 text-white text-sm rounded-full px-4 py-2 outline-none cursor-pointer"
           >
+            <option value="featured">Featured</option>
             <option value="duration">Duration</option>
             <option value="caloriesBurned">Calories</option>
             <option value="rating">Rating</option>
@@ -74,3 +78,6 @@ export default function LibrarySection({ workouts }: { workouts: Workout[] }) {
           ))}
         </div>
       )}
+    </section>
+  );
+}
