@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 export type Workout = {
   id: string;
@@ -34,6 +34,31 @@ const PlanContext = createContext<PlanContextType | undefined>(undefined);
 export function PlanProvider({ children }: { children: ReactNode }) {
   const [plan, setPlan] = useState<Workout[]>([]);
   const [saved, setSaved] = useState<Workout[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+ useEffect(() => {
+  try {
+    const p = localStorage.getItem("fitlog-plan");
+    const s = localStorage.getItem("fitlog-saved");
+    if (p) {
+      setPlan(JSON.parse(p) as Workout[]);
+    }
+    if (s) {
+      setSaved(JSON.parse(s) as Workout[]);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+  setLoaded(true);
+}, []);
+
+  useEffect(() => {
+    if (loaded) localStorage.setItem("fitlog-plan", JSON.stringify(plan));
+  }, [plan, loaded]);
+
+  useEffect(() => {
+    if (loaded) localStorage.setItem("fitlog-saved", JSON.stringify(saved));
+  }, [saved, loaded]);
 
   const addToPlan = (workout: Workout) => {
     setPlan((prev) => (prev.find((w) => w.id === workout.id) ? prev : [...prev, workout]));
