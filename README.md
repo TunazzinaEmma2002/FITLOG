@@ -29,5 +29,5 @@ FitLog is a dark, no-nonsense gym companion built with Next.js. Browse a library
 
 https://github.com/TunazzinaEmma2002/FITLOG
 
-## Live Link
+## Live Link here
 https://fitlog-plum-rho.vercel.app/
