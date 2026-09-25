@@ -23,7 +23,7 @@ FitLog is a dark, no-nonsense gym companion built with Next.js. Browse a library
 8. **Custom 404 Page** — Friendly error page for any unknown route.
 
 
-https://fitlog-plum-rho.vercel.app/
+
 
 ## GitHub Repository
 
