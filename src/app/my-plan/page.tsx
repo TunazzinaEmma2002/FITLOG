@@ -9,9 +9,18 @@ import { toast } from "react-toastify";
 type SortKey = "duration" | "caloriesBurned" | "rating";
 
 export default function MyPlanPage() {
-  const { plan, saved, removeFromPlan, removeFromSaved, markAsDone } = usePlan();
+  const { plan, saved, removeFromPlan, removeFromSaved, markAsDone, loaded } = usePlan();
   const [tab, setTab] = useState<"plan" | "saved">("plan");
   const [sortBy, setSortBy] = useState<SortKey>("duration");
+
+  if (!loaded) {
+    return (
+      <div className="flex flex-col items-center justify-center py-32">
+        <div className="w-10 h-10 border-4 border-neutral-700 border-t-lime-400 rounded-full animate-spin" />
+        <p className="text-neutral-500 text-sm mt-4">Loading workouts…</p>
+      </div>
+    );
+  }
 
   const rawList = tab === "plan" ? plan : saved;
 
@@ -47,20 +56,20 @@ export default function MyPlanPage() {
         Cap of five lifts for today. Finish them, then load more.
       </p>
 
-   <div className="grid grid-cols-3 gap-4 sm:gap-6 mt-8 bg-[#161616] border border-neutral-800 rounded-2xl p-5 sm:p-6">
-  <div>
-    <p className="text-neutral-500 text-xs uppercase tracking-wide">Exercises</p>
-    <p className="text-lime-400 text-3xl sm:text-4xl font-bold mt-1">{plan.length}</p>
-  </div>
-  <div>
-    <p className="text-neutral-500 text-xs uppercase tracking-wide">Minutes</p>
-    <p className="text-white text-3xl sm:text-4xl font-bold mt-1">{minutes}</p>
-  </div>
-  <div>
-    <p className="text-neutral-500 text-xs uppercase tracking-wide">Calories</p>
-    <p className="text-white text-3xl sm:text-4xl font-bold mt-1">{calories}</p>
-  </div>
-</div>
+      <div className="grid grid-cols-3 gap-4 sm:gap-6 mt-8 bg-[#161616] border border-neutral-800 rounded-2xl p-5 sm:p-6">
+        <div>
+          <p className="text-neutral-500 text-xs uppercase tracking-wide">Exercises</p>
+          <p className="text-lime-400 text-3xl sm:text-4xl font-bold mt-1">{plan.length}</p>
+        </div>
+        <div>
+          <p className="text-neutral-500 text-xs uppercase tracking-wide">Minutes</p>
+          <p className="text-white text-3xl sm:text-4xl font-bold mt-1">{minutes}</p>
+        </div>
+        <div>
+          <p className="text-neutral-500 text-xs uppercase tracking-wide">Calories</p>
+          <p className="text-white text-3xl sm:text-4xl font-bold mt-1">{calories}</p>
+        </div>
+      </div>
 
       <div className="flex items-center justify-between flex-wrap gap-4 mt-8">
         <div className="flex gap-2">

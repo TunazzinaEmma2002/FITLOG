@@ -22,6 +22,7 @@ export type Workout = {
 type PlanContextType = {
   plan: Workout[];
   saved: Workout[];
+  loaded: boolean;
   addToPlan: (workout: Workout) => void;
   addToSaved: (workout: Workout) => void;
   removeFromPlan: (id: string) => void;
@@ -36,21 +37,21 @@ export function PlanProvider({ children }: { children: ReactNode }) {
   const [saved, setSaved] = useState<Workout[]>([]);
   const [loaded, setLoaded] = useState(false);
 
- useEffect(() => {
-  try {
-    const p = localStorage.getItem("fitlog-plan");
-    const s = localStorage.getItem("fitlog-saved");
-    if (p) {
-      setPlan(JSON.parse(p) as Workout[]);
+  useEffect(() => {
+    try {
+      const p = localStorage.getItem("fitlog-plan");
+      const s = localStorage.getItem("fitlog-saved");
+      if (p) {
+        setPlan(JSON.parse(p) as Workout[]);
+      }
+      if (s) {
+        setSaved(JSON.parse(s) as Workout[]);
+      }
+    } catch (e) {
+      console.error(e);
     }
-    if (s) {
-      setSaved(JSON.parse(s) as Workout[]);
-    }
-  } catch (e) {
-    console.error(e);
-  }
-  setLoaded(true);
-}, []);
+    setLoaded(true);
+  }, []);
 
   useEffect(() => {
     if (loaded) localStorage.setItem("fitlog-plan", JSON.stringify(plan));
@@ -81,7 +82,9 @@ export function PlanProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <PlanContext.Provider value={{ plan, saved, addToPlan, addToSaved, removeFromPlan, removeFromSaved, markAsDone }}>
+    <PlanContext.Provider
+      value={{ plan, saved, loaded, addToPlan, addToSaved, removeFromPlan, removeFromSaved, markAsDone }}
+    >
       {children}
     </PlanContext.Provider>
   );
@@ -91,4 +94,4 @@ export function usePlan() {
   const context = useContext(PlanContext);
   if (!context) throw new Error("usePlan must be used within PlanProvider");
   return context;
-}
+} 
