@@ -28,3 +28,6 @@ https://fitlog-plum-rho.vercel.app/
 ## GitHub Repository
 
 https://github.com/TunazzinaEmma2002/FITLOG
+
+## Live Link
+https://fitlog-plum-rho.vercel.app/
