@@ -6,11 +6,21 @@ import Image from "next/image";
 import { usePlan } from "../../context/PlanContext";
 import { toast } from "react-toastify";
 
+type SortKey = "duration" | "caloriesBurned" | "rating";
+
 export default function MyPlanPage() {
   const { plan, saved, removeFromPlan, removeFromSaved, markAsDone } = usePlan();
   const [tab, setTab] = useState<"plan" | "saved">("plan");
+  const [sortBy, setSortBy] = useState<SortKey>("duration");
 
-  const activeList = tab === "plan" ? plan : saved;
+  const rawList = tab === "plan" ? plan : saved;
+
+  const activeList = [...rawList].sort((a, b) => {
+    if (sortBy === "rating") return b.rating - a.rating;
+    if (sortBy === "caloriesBurned") return b.caloriesBurned - a.caloriesBurned;
+    return a.duration - b.duration;
+  });
+
   const minutes = plan.reduce((sum, w) => sum + w.duration, 0);
   const calories = plan.reduce((sum, w) => sum + w.caloriesBurned, 0);
 
@@ -52,23 +62,38 @@ export default function MyPlanPage() {
         </div>
       </div>
 
-      <div className="flex gap-2 mt-8">
-        <button
-          onClick={() => setTab("plan")}
-          className={`px-5 py-2.5 rounded-full text-sm font-semibold transition ${
-            tab === "plan" ? "bg-lime-400 text-black" : "text-neutral-400 border border-neutral-700 hover:text-white"
-          }`}
-        >
-          Today&apos;s Plan
-        </button>
-        <button
-          onClick={() => setTab("saved")}
-          className={`px-5 py-2.5 rounded-full text-sm font-semibold transition ${
-            tab === "saved" ? "bg-lime-400 text-black" : "text-neutral-400 border border-neutral-700 hover:text-white"
-          }`}
-        >
-          Saved
-        </button>
+      <div className="flex items-center justify-between flex-wrap gap-4 mt-8">
+        <div className="flex gap-2">
+          <button
+            onClick={() => setTab("plan")}
+            className={`px-5 py-2.5 rounded-full text-sm font-semibold transition ${
+              tab === "plan" ? "bg-lime-400 text-black" : "text-neutral-400 border border-neutral-700 hover:text-white"
+            }`}
+          >
+            Today&apos;s Plan
+          </button>
+          <button
+            onClick={() => setTab("saved")}
+            className={`px-5 py-2.5 rounded-full text-sm font-semibold transition ${
+              tab === "saved" ? "bg-lime-400 text-black" : "text-neutral-400 border border-neutral-700 hover:text-white"
+            }`}
+          >
+            Saved
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-neutral-500 text-xs uppercase">Sort By</span>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as SortKey)}
+            className="bg-[#161616] border border-neutral-700 text-white text-sm rounded-full px-4 py-2 outline-none cursor-pointer"
+          >
+            <option value="duration">Duration</option>
+            <option value="caloriesBurned">Calories</option>
+            <option value="rating">Rating</option>
+          </select>
+        </div>
       </div>
 
       <div className="mt-6 space-y-4">
